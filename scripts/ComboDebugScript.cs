@@ -14,6 +14,7 @@ public class ComboDebugScript : MonoBehaviour
 {
 	ComboLink[] _allComboMoves;
 	public ComboLinkID _CurrentlySelectedLink;
+	ComboLinkID _lastSelected;
 	public string _name;
 	public float _length;
 	public float _time;
@@ -24,7 +25,7 @@ public class ComboDebugScript : MonoBehaviour
 	public bool _save = false;
 	public bool _load = false;
 	public bool _save2file = false;
-	public bool _load2file = false;
+	public bool _loadFromfile = false;
 	void Awake()
     {
 		LoadMoves();
@@ -34,6 +35,14 @@ public class ComboDebugScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (_CurrentlySelectedLink != _lastSelected) {
+			Load();
+			_lastSelected = _CurrentlySelectedLink;
+		}
+		if (_CurrentlySelectedLink == ComboLinkID.END) {
+			_CurrentlySelectedLink = ComboLinkID.M1;
+			//Load();
+		}
 		if (_save) {
 			Save();
 			_save = false;
@@ -47,10 +56,10 @@ public class ComboDebugScript : MonoBehaviour
 			SaveFile();
 			_save2file = false;
 		}
-		if (_load2file)
+		if (_loadFromfile)
 		{
 			LoadFile();
-			_load2file = false;
+			_loadFromfile = false;
 		}
 	}
 	private void Load() {
@@ -60,54 +69,125 @@ public class ComboDebugScript : MonoBehaviour
 		_hitTimeStart = _allComboMoves[(int)_CurrentlySelectedLink]._hitTimeStart;
 		_time = _allComboMoves[(int)_CurrentlySelectedLink]._time;
 
+		_allNextLinks = new ComboLinkID[_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks.Length];
+		int i = 0;
+		foreach (ComboLink cl in _allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks)
+		{
+			if (cl != null)
+				_allNextLinks[i] = cl._idName;
+			else
+				_allNextLinks[i] = ComboLinkID.END;
+			i++;
+		}
 	}
 	private void Save() {
+		if (!CheckEdit()) return;
 		_allComboMoves[(int)_CurrentlySelectedLink]._length = _length;
 		_allComboMoves[(int)_CurrentlySelectedLink]._name = _name;
 		_allComboMoves[(int)_CurrentlySelectedLink]._hitTimeEnd = _hitTimeEnd;
 		_allComboMoves[(int)_CurrentlySelectedLink]._hitTimeStart = _hitTimeStart;
 		_allComboMoves[(int)_CurrentlySelectedLink]._time = _time;
 
+		_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks = new ComboLink[_allNextLinks.Length];
+		for (int i = 0; i < _allNextLinks.Length; i++) {
+			if (_allNextLinks[i] == ComboLinkID.END) {
+				_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks[i] = null;
+			}
+			else 
+				_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks[i] = _allComboMoves[(int)(_allNextLinks[i])];
+		}
 
+
+	}
+	private bool CheckEdit() {
+		int change = 0;
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._length != _length) {
+			change++;
+		}
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._name != _name) {
+			change++;
+		}
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._hitTimeEnd != _hitTimeEnd){
+			change++;
+		}
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._hitTimeStart != _hitTimeStart) {
+			change++;
+		}
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._time != _time) {
+			change++;
+		}
+		if (_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks.Length != _allNextLinks.Length) {
+			change++;
+			return (change != 0);
+		}
+		for (int i = 0; i < _allNextLinks.Length; i++)
+		{
+			if (_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks[i] == null && _allNextLinks[i] != ComboLinkID.END) {
+				change++;
+			}
+			else if (_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks[i] == null && _allNextLinks[i] == ComboLinkID.END)
+			{
+				continue;
+			}
+			else if (_allComboMoves[(int)_CurrentlySelectedLink]._allNextLinks[i]._idName != _allNextLinks[i]) {
+				change++;
+			}
+		}
+		return (change != 0);
 	}
 	private void LoadMoves() {
 		_allComboMoves = new ComboLink[(int)ComboLinkID.END];
 		for (int i = 0; i < _allComboMoves.Length; i++) {
-			_allComboMoves[i] = new ComboLink((ComboLinkID)(i), "temp", 0,0,0,0);
+			_allComboMoves[i] = new ComboLink((ComboLinkID)(i), "temp", 0, 0, 0, 0);
 		}
 		LoadFile();
 	}
 
 	public void SaveFile()
 	{
-		string fPath = Application.persistentDataPath + "/combos.txt";
-		if (File.Exists(fPath)) {
-			File.Delete(fPath);
-		}
+	/*	string path = Path.GetFullPath("Assets/test.txt");
+		//if (!File.Exists(path))
+		//{
+			var fs = new FileStream(path, FileMode.Create);
+			fs.Dispose();
+			string text = File.ReadAllText(path);
+			Debug.Log(text);
+		//}*/
+		//Read the text from directly from the test.txt file
+		/*StreamReader reader = new StreamReader(path);
+		Debug.Log(reader.ReadToEnd());
+		reader.Close();
+		*/
 
-		FileStream fs = new FileStream(fPath, FileMode.CreateNew);
+		string path = Path.GetFullPath("Assets/ComboData/combo.ext");
+		Debug.Log(path);
+		FileStream fs = new FileStream(path, FileMode.Truncate);
+		
 		string data = "";
 
 		foreach (ComboLink cl in _allComboMoves) {
 			data += cl.GetSerializedData();
 		}
+		Debug.Log(data);
 		byte[] bytes = Encoding.UTF8.GetBytes(data);
 		fs.Write(bytes, 0, bytes.Length);
 		fs.Close();
-
+		fs.Dispose();
+		
 	}
 
 	public void LoadFile()
 	{
-		//M1|temp|0|0|0|0|M2|temp|0|0|0|0|M3|temp|0|0|0|0|
-		string fPath = Application.persistentDataPath + "/combos.txt";
 
-		if (!File.Exists(fPath))
+		//M1|temp|0|0|0|0|M2|temp|0|0|0|0|M3|temp|0|0|0|0|
+		string path = Path.GetFullPath("Assets/ComboData/combo.ext");
+		Debug.Log(path);
+		if (!File.Exists(path))
 		{
 			return;
 		}
 		string allData = "";
-		FileStream fs = new FileStream(fPath, FileMode.Open);
+		FileStream fs = new FileStream(path, FileMode.Open);
 		byte[] buf = new byte[1024];
 		int c;
 
@@ -116,10 +196,14 @@ public class ComboDebugScript : MonoBehaviour
 			allData += Encoding.UTF8.GetString(buf, 0, c);
 		}
 		fs.Close();
+		fs.Dispose();
 		Debug.Log(allData);
+		//M1|temp|0|0|0|0|END|END|M2|temp|0|0|0|0|END|END|M3|temp|0|0|0|0|END|END||null|l|l|null|
+
 		string[] allDataSplit = allData.Split('|');
 		int ind = 0;
-		for (int i = 0; i < allDataSplit.Length-1; i+=6) {
+		int itmsPerObj = ComboLink.max_branches + 5;
+		for (int i = 0; i < allDataSplit.Length-1; i+= itmsPerObj + 1) {
 			ComboLink cl = new ComboLink((ComboLinkID)Enum.Parse(typeof(ComboLinkID), allDataSplit[i]),
 				(allDataSplit[i + 1]),
 				float.Parse(allDataSplit[i + 2]),

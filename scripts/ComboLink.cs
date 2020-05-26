@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ComboLink
 {
+	public const int  max_branches = 2;
 	public ComboLinkID _idName;
 	public string _name;
 	public float _length;
@@ -18,21 +19,36 @@ public class ComboLink
 		_hitTimeStart = hitTime;
 		_hitTimeEnd = hitTime + hitTimeOffset;
 		_idName = cId;
-		_allNextLinks = null;
+		_allNextLinks = new ComboLink[max_branches] { null, null };
 	}
 	public string GetSerializedData() {
 		string s = "";
-		if(_allNextLinks != null)
-			foreach (ComboLink cl in _allNextLinks) {
-				s += cl._idName.ToString() + "|";
-			}
-		return  _idName.ToString() + "|" +
-			_name + "|" + 
+		for (int i = 0; i < max_branches; i++) {
+			if (_allNextLinks[i] != null)
+				s += _allNextLinks[i]._idName.ToString() + "|";
+			else
+				s += "END|";
+		}
+		s = _idName.ToString() + "|" +
+			_name + "|" +
 			_length.ToString() + "|" +
 			_time.ToString() + "|" +
 			_hitTimeStart.ToString() + "|" +
 			_hitTimeEnd.ToString() + "|" + s;
-			;
+		return s;
+	}
+	public string GetLenStr(string s) {
+		int len = s.Length;
+		string str = "";
+		if (len < 100) {
+			str = "0" + len.ToString();
+		}
+		if (len < 10)
+		{
+			str = "00" + len.ToString();
+
+		}
+		return str + s;
 	}
 
 
