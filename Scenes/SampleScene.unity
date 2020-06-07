@@ -468,6 +468,7 @@ MonoBehaviour:
   _speed: 1500
   _mouseOffsetSpeed: 2
   _offset: {x: 0, y: 2}
+  _responseTime: 0.1
 --- !u!4 &1463052422
 Transform:
   m_ObjectHideFlags: 0

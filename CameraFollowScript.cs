@@ -7,12 +7,13 @@ public class CameraFollowScript : MonoBehaviour
 	public GameObject _target;
 	public float _speed;
 	public float _mouseOffsetSpeed;
-	public Vector2 _offset;
+	public Vector3 _offset;
 	Vector2 _halfScreen;
-    // Start is called before the first frame update
-    void Start()
+	// Start is called before the first frame update
+	void Start()
     {
 		_halfScreen = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+
 	}
 
     // Update is called once per frame
@@ -20,13 +21,14 @@ public class CameraFollowScript : MonoBehaviour
     {
 		//float dist = Vector3.Distance(transform.position, _target.transform.position);
 		Vector3 mPos = new Vector3(transform.position.x, transform.position.y, 0);
-		
-		Vector3 tPos = new Vector3(_target.transform.position.x, _target.transform.position.y , 0);
+
+		Vector3 tPos = new Vector3(_target.transform.position.x, _target.transform.position.y, 0);
 		float dist = Vector2.Distance(mPos, tPos);
 		Vector3 dir = (tPos - mPos).normalized;
 		float sOffset = Time.deltaTime * _speed * GetSpeedOffset(dist);
 
-		transform.position += dir * sOffset;
+		//transform.position += dir * sOffset;
+		transform.position = new Vector3(tPos.x, tPos.y, transform.position.z);
 		MouseOffset(sOffset);
 	}
 
@@ -52,7 +54,7 @@ public class CameraFollowScript : MonoBehaviour
 		else if (result.x < -1) result.x = -1;
 		result.z = 0;
 		//result.y = 0;
-		transform.GetChild(0).localPosition = (result * (_mouseOffsetSpeed )) +  new Vector3(_offset.x, _offset.y, 0);
+		transform.GetChild(0).localPosition = (result * (_mouseOffsetSpeed )) +  _offset;
 	}
 	float GetSpeedOffset(float dist) {
 		float dist2end = dist/(_halfScreen.x);
