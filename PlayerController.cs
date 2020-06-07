@@ -7,13 +7,12 @@ public class PlayerController : MonoBehaviour
 	Animator _animator;
 	bool _playerDir;
 	PhysicsObject _phyo;
-	bool _inAir;
-
+	public float _jumpSpeed;
 	// Start is called before the first frame update
 	void Start()
 	{
 		_playerDir = true;
-		_inAir = false;
+
 		_animator = GetComponent<Animator>();
 		_phyo = GetComponent<PhysicsObject>();
 	}
@@ -26,19 +25,20 @@ public class PlayerController : MonoBehaviour
 		float inptY = Input.GetAxis("Vertical");
 		CheckMousePos();
 		if (inptZ != 0) {
+			_animator.SetFloat("inputZ", inptZ);
 			Move(inptZ);
 
 		}
-		if (inptY != 0 && ! _inAir) {
-			_inAir = true;
-			_animator.SetBool("inAir", _inAir);
+		if (inptY != 0 && !_phyo.InAir) {
+			//_phyo.InAir = true;
+			_animator.SetBool("inAir", _phyo.InAir);
 			_animator.Play("Armed-Jump");
+			//dir2Cursor*jumpspeed
+			//_phyo.AddAirForce(Dir2Cursor() * _jumpSpeed);
+			_phyo.AddAirForce(new Vector3(0, _jumpSpeed, 0));
 			
 		}
-		if (!_inAir)
-		{
-			_animator.SetFloat("inputZ", inptZ);
-		}
+		
 		
 		if (Input.GetAxis("Jump") != 0) {
 			//_animator.Play("Armed-Jump");			
@@ -121,17 +121,15 @@ public class PlayerController : MonoBehaviour
 	}
 	public void FootL() { }
 
-	private void OnCollisionEnter(Collision collision)
-	{
-		Vector3 colNorm = collision.GetContact(0).normal;
-		if (colNorm.y > 0.85f) {
-			_inAir = false;
-			_animator.SetBool("inAir", _inAir);
-		}
-	}
+	public void Land() { }
 	private void Move(float inptz)
 	{
 		float speed = 7.5f;
 		_phyo.AddVelocity(new Vector3(inptz* speed, 0, 0));
+	}
+	Vector3 Dir2Cursor() {
+		Vector3 dir = Vector3.zero;
+		dir = (  Input.mousePosition - new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0)).normalized;
+		return dir;
 	}
 }

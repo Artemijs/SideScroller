@@ -466,6 +466,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 1574474003}
   _speed: 1500
+  _mouseOffsetSpeed: 2
+  _offset: {x: 0, y: 2}
 --- !u!4 &1463052422
 Transform:
   m_ObjectHideFlags: 0
@@ -575,9 +577,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 1
+  m_Height: 2.12
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.97, z: 0}
 --- !u!114 &1574474005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,6 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3374b783b163a46ab114ff95d48ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _jumpSpeed: 15
 --- !u!114 &1574474006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,6 +605,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af3787fe8ee45c459207904afd0aa13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gravity: 0.75
+  _inAir: 0
+--- !u!54 &1574474009
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574474003}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1001 &1608301779
 PrefabInstance:
   m_ObjectHideFlags: 0

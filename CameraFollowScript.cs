@@ -24,11 +24,13 @@ public class CameraFollowScript : MonoBehaviour
 		Vector3 tPos = new Vector3(_target.transform.position.x, _target.transform.position.y , 0);
 		float dist = Vector2.Distance(mPos, tPos);
 		Vector3 dir = (tPos - mPos).normalized;
-		transform.position += dir * Time.deltaTime * _speed * GetSpeedOffset(dist);
-		MouseOffset();
+		float sOffset = Time.deltaTime * _speed * GetSpeedOffset(dist);
+
+		transform.position += dir * sOffset;
+		MouseOffset(sOffset);
 	}
 
-	void MouseOffset() {
+	void MouseOffset(float grr) {
 		Vector2 mPos = Input.mousePosition;
 		Vector3 result = Vector3.zero;
 		if (mPos.x > _halfScreen.x)
@@ -50,7 +52,7 @@ public class CameraFollowScript : MonoBehaviour
 		else if (result.x < -1) result.x = -1;
 		result.z = 0;
 		//result.y = 0;
-		transform.GetChild(0).localPosition = (result * _mouseOffsetSpeed) +  new Vector3(_offset.x, _offset.y, 0);
+		transform.GetChild(0).localPosition = (result * (_mouseOffsetSpeed )) +  new Vector3(_offset.x, _offset.y, 0);
 	}
 	float GetSpeedOffset(float dist) {
 		float dist2end = dist/(_halfScreen.x);
