@@ -6,11 +6,10 @@ public class CameraFollowScript : MonoBehaviour
 {
 	public GameObject _target;
 	public float _speed;
-	float accel;
+
     // Start is called before the first frame update
     void Start()
     {
-		accel = 0;
 
 	}
 
@@ -22,10 +21,10 @@ public class CameraFollowScript : MonoBehaviour
 		Vector3 tPos = new Vector3(_target.transform.position.x, _target.transform.position.y , 0);
 		float dist = Vector2.Distance(mPos, tPos);
 		Vector3 dir = (tPos - mPos).normalized;
-		transform.position += dir * Time.deltaTime * _speed * GetSpeed(dist);
-		accel += 0.01f;
+		transform.position += dir * Time.deltaTime * _speed * GetSpeedOffset(dist);
+
 	}
-	float GetSpeed(float dist) {
+	float GetSpeedOffset(float dist) {
 		float dist2end = dist/(Screen.width * 0.5f);
 		if (dist2end > 1) dist2end = 1;
 		else if (dist2end < 0) dist2end = 0;
