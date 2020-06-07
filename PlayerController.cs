@@ -6,81 +6,63 @@ public class PlayerController : MonoBehaviour
 {
 	Animator _animator;
 	bool _playerDir;
-	int _currentAttack;
-	ComboData _comboData;
-	int _unitId;
+
 	bool _inAir;
-	float _time;
-	AttackAnimData _caad;
-	
+
 	// Start is called before the first frame update
 	void Start()
 	{
-		_time = 0;
 		_playerDir = true;
 		_inAir = false;
-		_currentAttack = 0;
 		_animator = GetComponent<Animator>();
-		_comboData = GetComponent<ComboData>();
-		_unitId = UnitManager.Instance.CreateUnit(gameObject);
-		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
 		//gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-		float inptX = Input.GetAxis("Horizontal");
+		float inptZ = Input.GetAxis("Horizontal");
 		float inptY = Input.GetAxis("Vertical");
 		CheckMousePos();
-		if (inptX != 0) {
+		if (inptZ != 0) {
 			//Debug.Log("this too ");
-			//ActionManager.Instance.AddAction(new TestAction(_unitId, 0.5f));
-			ActionManager.Instance.AddUniqueAction(new ActionData() { _id = UniqueActionID.MOVE, _args = new int[] { _unitId, (int)(inptX*10) } });
+
 		}
 		if (inptY != 0 && ! _inAir) {
 			_inAir = true;
 			_animator.SetBool("inAir", _inAir);
 			_animator.Play("Armed-Jump");
-			ActionManager.Instance.AddUniqueAction(new ActionData() { _id = UniqueActionID.JUMP, _args = new int[] { _unitId } });
+			
 		}
 		if (!_inAir)
 		{
-			_animator.SetFloat("inputZ", inptX);
+			_animator.SetFloat("inputZ", inptZ);
 		}
 		
 		if (Input.GetAxis("Jump") != 0) {
 			//_animator.Play("Armed-Jump");			
-			Roll(inptX);
+			//Roll(inptZ);
 		}
-		CheckBlock();
+		if (CheckBlock())
+			Roll(inptZ);
 		CheckAttack();
 
 
 	}
 	void CheckAttack() {
-		
-		if (Input.GetMouseButtonDown(0) && _currentAttack == 0)
-		{
-			_caad = _comboData.GetAAD(0);
-			_currentAttack++;
-			_animator.Play(_caad._name, 0, 0);
-			
-		}
-		else if (_currentAttack != 0)
-		{
+	
 
 			
-			float animTime = _caad._time * _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+			//float animTime =  _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
 			//print(animTime+ " "+ caad._time);
 			
-			if (animTime >= _caad._time) {
+			/*if (animTime >= _caad._time) {
 				_currentAttack = 0;
 				print("finished attacking ");
-			}
+			}*/
 			
-		}
+
 	}
 	void Roll(float inptX)
 	{
@@ -115,7 +97,7 @@ public class PlayerController : MonoBehaviour
 		if (_playerDir)
 		{
 			gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
-			_animator.SetFloat("inputDir", 0);
+			_animator.SetFloat("inputDir", -1);
 		}
 		else
 		{
@@ -123,7 +105,7 @@ public class PlayerController : MonoBehaviour
 			_animator.SetFloat("inputDir", 1);
 		}
 	}
-	void CheckBlock() {
+	bool CheckBlock() {
 		if (Input.GetMouseButtonDown(1)) {
 			_animator.SetBool("blocking", true);
 		}
@@ -131,8 +113,11 @@ public class PlayerController : MonoBehaviour
 		{
 			_animator.SetBool("blocking", false);
 		}
+		return (Input.GetMouseButton(1));
 	}
-	public void FootR() { }
+	public void FootR() {
+		
+	}
 	public void FootL() { }
 
 	private void OnCollisionEnter(Collision collision)
