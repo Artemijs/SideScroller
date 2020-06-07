@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class Temp : MonoBehaviour
 {
-	private void Hit() { }
+	/*private void Hit() {
+		Debug.Log("Called Hit);
+	}*/
 }

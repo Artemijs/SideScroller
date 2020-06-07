@@ -10,15 +10,20 @@ public class PlayerController : MonoBehaviour
 	ComboData _comboData;
 	int _unitId;
 	bool _inAir;
+	float _time;
+	AttackAnimData _caad;
+	
 	// Start is called before the first frame update
 	void Start()
 	{
+		_time = 0;
 		_playerDir = true;
 		_inAir = false;
 		_currentAttack = 0;
 		_animator = GetComponent<Animator>();
 		_comboData = GetComponent<ComboData>();
 		_unitId = UnitManager.Instance.CreateUnit(gameObject);
+		
 	}
 
 	// Update is called once per frame
@@ -31,7 +36,7 @@ public class PlayerController : MonoBehaviour
 		if (inptX != 0) {
 			//Debug.Log("this too ");
 			//ActionManager.Instance.AddAction(new TestAction(_unitId, 0.5f));
-			ActionManager.Instance.AddUniqueAction(new ActionData() { _id = UniqueActionID.MOVE, _args = new int[] { _unitId, (int)(inptX*100) } });
+			ActionManager.Instance.AddUniqueAction(new ActionData() { _id = UniqueActionID.MOVE, _args = new int[] { _unitId, (int)(inptX*10) } });
 		}
 		if (inptY != 0 && ! _inAir) {
 			_inAir = true;
@@ -54,25 +59,23 @@ public class PlayerController : MonoBehaviour
 
 	}
 	void CheckAttack() {
+		
 		if (Input.GetMouseButtonDown(0) && _currentAttack == 0)
 		{
+			_caad = _comboData.GetAAD(0);
 			_currentAttack++;
-			_animator.Play("Sword-Attack-R1", 0, 0);
-			AttackAnimData caad = _comboData.GetAAD(_currentAttack - 1);
-			_animator.SetFloat("animspeed", caad._speed);
+			_animator.Play(_caad._name, 0, 0);
+			
 		}
 		else if (_currentAttack != 0)
 		{
 
-			AttackAnimData caad = _comboData.GetAAD(_currentAttack - 1);
-			float animTime = caad._time * _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+			
+			float animTime = _caad._time * _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
 			//print(animTime+ " "+ caad._time);
-			/*if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.8f && Input.GetMouseButtonDown(0) && _currentAttack == 1) {
-				print("TIME TO CLICK HEADS SCRUB");
-				_currentAttack++;
-			}*/
-			if (animTime >= caad._time) {
+			
+			if (animTime >= _caad._time) {
 				_currentAttack = 0;
 				print("finished attacking ");
 			}

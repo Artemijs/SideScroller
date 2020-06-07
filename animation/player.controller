@@ -29,12 +29,18 @@ AnimatorController:
     m_Controller: {fileID: 0}
   - m_Name: animspeed
     m_Type: 1
-    m_DefaultFloat: 0
+    m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
   - m_Name: inAir
     m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: time
+    m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -763,7 +769,7 @@ AnimatorState:
   m_SpeedParameter: animspeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
-  m_TimeParameter: 
+  m_TimeParameter: time
 --- !u!1102 &1102942781114122344
 AnimatorState:
   serializedVersion: 5
@@ -829,7 +835,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102224939806914446}
-    m_Position: {x: 540, y: 120, z: 0}
+    m_Position: {x: 588, y: 72, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102942781114122344}
     m_Position: {x: 828, y: -84, z: 0}
@@ -847,7 +853,7 @@ AnimatorStateMachine:
     m_Position: {x: 60, y: -36, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102708426418475904}
-    m_Position: {x: 492, y: 396, z: 0}
+    m_Position: {x: 540, y: 372, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102540671028873806}
     m_Position: {x: 852, y: 420, z: 0}

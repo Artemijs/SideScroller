@@ -19,7 +19,7 @@ public class ComboLink
 		_hitTimeStart = hitTime;
 		_hitTimeEnd = hitTime + hitTimeOffset;
 		_idName = cId;
-		_allNextLinks = new ComboLink[max_branches] { null, null };
+		_allNextLinks = new ComboLink[max_branches];
 	}
 	public string GetSerializedData() {
 		string s = "";
