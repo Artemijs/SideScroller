@@ -8,11 +8,12 @@ public class PlayerController : MonoBehaviour
 	bool _playerDir;
 	PhysicsObject _phyo;
 	public float _jumpSpeed;
+	public bool _rolling;
 	// Start is called before the first frame update
 	void Start()
 	{
 		_playerDir = true;
-
+		_rolling = false;
 		_animator = GetComponent<Animator>();
 		_phyo = GetComponent<PhysicsObject>();
 	}
@@ -35,19 +36,24 @@ public class PlayerController : MonoBehaviour
 			_animator.Play("Armed-Jump");
 			//dir2Cursor*jumpspeed
 			//_phyo.AddAirForce(Dir2Cursor() * _jumpSpeed);
-			_phyo.AddAirForce(new Vector3(0, _jumpSpeed, 0));
+			_phyo.AddAirForce(new Vector3(inptZ * 2, _jumpSpeed, 0));
 			
 		}
 		
 		
 		if (Input.GetAxis("Jump") != 0) {
-			//_animator.Play("Armed-Jump");			
+			//_animator.Play("Armed-Jump");
 			//Roll(inptZ);
 		}
-		if (CheckBlock())
+		CheckBlock();
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
 			Roll(inptZ);
+		}
 		CheckAttack();
-
+		if (_rolling) {
+			_phyo.AddVelocity(new Vector3(inptZ * 30, 0, 0));
+		}
 
 	}
 	void CheckAttack() {
@@ -122,9 +128,19 @@ public class PlayerController : MonoBehaviour
 	public void FootL() { }
 
 	public void Land() { }
+
+	public void start_roll() {
+		_rolling = true;
+	}
+	public void end_roll() {
+		_rolling = false;
+	}
 	private void Move(float inptz)
 	{
 		float speed = 7.5f;
+		if (Input.GetMouseButton(1)) {
+			speed *= 0.5f;
+		}
 		_phyo.AddVelocity(new Vector3(inptz* speed, 0, 0));
 	}
 	Vector3 Dir2Cursor() {
