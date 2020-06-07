@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
 	Animator _animator;
 	bool _playerDir;
-
+	PhysicsObject _phyo;
 	bool _inAir;
 
 	// Start is called before the first frame update
@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 		_playerDir = true;
 		_inAir = false;
 		_animator = GetComponent<Animator>();
+		_phyo = GetComponent<PhysicsObject>();
 	}
 
 	// Update is called once per frame
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
 		float inptY = Input.GetAxis("Vertical");
 		CheckMousePos();
 		if (inptZ != 0) {
-			//Debug.Log("this too ");
+			Move(inptZ);
 
 		}
 		if (inptY != 0 && ! _inAir) {
@@ -127,5 +128,10 @@ public class PlayerController : MonoBehaviour
 			_inAir = false;
 			_animator.SetBool("inAir", _inAir);
 		}
+	}
+	private void Move(float inptz)
+	{
+		float speed = 7.5f;
+		_phyo.AddVelocity(new Vector3(inptz* speed, 0, 0));
 	}
 }
