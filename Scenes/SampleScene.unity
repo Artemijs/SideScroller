@@ -630,8 +630,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mat: {fileID: 2100000, guid: 121b01f2729d912458af47ef93ac2854, type: 2}
-  _start: {fileID: 1011059239}
-  _end: {fileID: 452792663}
+  _start: {fileID: 1011059240}
+  _end: {fileID: 452792664}
+  _width: 1
+  _visible: 1
 --- !u!1 &1463052420
 GameObject:
   m_ObjectHideFlags: 0

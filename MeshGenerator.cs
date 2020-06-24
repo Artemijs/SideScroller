@@ -11,6 +11,10 @@ public class MeshGenerator : MonoBehaviour
 	public Material _mat;
 	public Transform _start;
 	public Transform _end;
+	public float _width;
+	Vector3 _oStart;
+	public bool _visible;
+	Vector3 _oEnd;
 	// Start is called before the first frame update
 	void Start()
     {
@@ -20,17 +24,15 @@ public class MeshGenerator : MonoBehaviour
 		_mesh = new Mesh();
 		Vector3 p1 = _start.position;
 		Vector3 p2 = _end.position;
-		/*_verts[0] = new Vector3(-1.0f, 1.0f, 0f); //uvs 00
-		_verts[1] = new Vector3(1.0f, 1.0f, 0f);
 
-		_verts[2] = new Vector3(-1.0f, -1.0f, 0f);
-		_verts[3] = new Vector3(1.0f, -1.0f, 0f);
-		*/
+		_oStart = _start.position;
+		_oEnd = _end.position;
+
 		_verts[0] = p2;
 		_verts[1] = p1;
-		p2.y -= 2;
+		p2.y -= _width;
 		_verts[2] = p2;
-		p1.y -= 2;
+		p1.y -= _width;
 		_verts[3] = p1;
 
 		_uvs[0] = new Vector2(0.0f, 0.0f);
@@ -57,23 +59,45 @@ public class MeshGenerator : MonoBehaviour
 	
 	private void Update()
 	{
-		UpdateMesh();
+		if (!_visible) return;
+		if (_oStart != transform.position || _oEnd != _end.position) {
+			UpdateMesh();
+		}
+		
 		Graphics.DrawMesh(_mesh, transform.position, Quaternion.identity, _mat, 0);
 	}
 	void UpdateMesh() {
 		Vector3 p1 = _start.position;
 		Vector3 p2 = _end.position;
+		_oStart = p1;
+		_oEnd = p2;
+		Vector3 dir = (_end.position - _start.position).normalized;
 		if (p1.x < p2.x) {
-			Vector3 temp = p2;
-			p2 = p1;
-			p1 = temp;
+			_verts[0] = GetVert(p2, dir, _width);
+			_verts[1] = GetVert(p1, dir, _width);
+			_verts[2] = GetVert(p2, dir, -_width);
+			_verts[3] = GetVert(p1, dir, -_width);
 		}
-		_verts[0] = p2;
-		_verts[1] = p1;
-		p2.y -= 2;
-		_verts[2] = p2;
-		p1.y -= 2;
-		_verts[3] = p1;
+		_verts[0] = GetVert(p1, dir, _width);
+		_verts[1] = GetVert(p2, dir, _width);
+		_verts[2] = GetVert(p1, dir, -_width);
+		_verts[3] = GetVert(p2, dir, -_width);
 		_mesh.vertices = _verts;
 	}
+	Vector3 GetVert(Vector3 p, Vector3 dir, float len)
+	{
+		dir = new Vector3(-dir.y, dir.x, 0);
+		return p + (dir * len);
+	}
+	Vector3 GetVert(Vector3 p, float len) {
+		Vector3 dir = (_end.position - _start.position).normalized;
+		dir = new Vector3(-dir.y, dir.x, 0);
+		return p + (dir * len);
+	}
 }
+/*_verts[0] = p2;
+		_verts[1] = p1;
+		p2.y -= _width;
+		_verts[2] = p2;
+		p1.y -= _width;
+		_verts[3] = p1;*/
