@@ -122,9 +122,7 @@ public class PlayerController : MonoBehaviour
 		}
 		return (Input.GetMouseButton(1));
 	}
-	public void FootR() {
-		
-	}
+	public void FootR() { }
 	public void FootL() { }
 
 	public void Land() { }
