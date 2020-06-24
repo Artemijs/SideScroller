@@ -15,7 +15,36 @@ public class CustomPlane
 	public Material _mat;
 	public Transform _start;
 	public Transform _end;
-	public float _width;
+	float _width;
+	public CustomPlane( float width, Material mat)
+	{
+		_visible = false;
+		_mat = mat;
+		_verts = new Vector3[4];
+		_uvs = new Vector2[4];
+		_tris = new int[6];
+		_mesh = new Mesh();
+		_width = width;
+
+		_uvs[0] = new Vector2(0.0f, 0.0f);
+		_uvs[1] = new Vector2(1.0f, 0.0f);
+		_uvs[2] = new Vector2(0.0f, 1.0f);
+		_uvs[3] = new Vector2(1.0f, 1.0f);
+
+		_tris[0] = 0;
+		_tris[1] = 1;
+		_tris[2] = 3;
+
+		_tris[3] = 0;
+		_tris[4] = 3;
+		_tris[5] = 2;
+
+		_mesh.vertices = _verts;
+		_mesh.uv = _uvs;
+		_mesh.triangles = _tris;
+		_mesh.RecalculateBounds();
+		_mesh.RecalculateNormals();
+	}
 	public CustomPlane(Transform start, Transform end, float width, Material mat) {
 		_visible = true;
 		_mat = mat;
@@ -23,20 +52,26 @@ public class CustomPlane
 		_uvs = new Vector2[4];
 		_tris = new int[6];
 		_mesh = new Mesh();
-
+		_width = width;
 		_start = start;
 		_end = end;
+
 		Vector3 p1 = start.position;
 		Vector3 p2 = _end.position;
 		_oStart = _start.position;
 		_oEnd = _end.position;
+		//p1 = new Vector3(-5, 3, 0);
+		//p2 = new Vector3(-6, 3, 0);
+		_verts[0] = GetVert(p1, _width);
+		_verts[1] = GetVert(p2, _width);
+		_verts[2] = GetVert(p1, -_width);
+		_verts[3] = GetVert(p2, -_width);
 
-		_verts[0] = p2;
-		_verts[1] = p1;
-		p2.y -= _width;
-		_verts[2] = p2;
-		p1.y -= _width;
-		_verts[3] = p1;
+
+		/*_verts[0] = new Vector3(-1, 1);
+		_verts[1] = new Vector3(1, 1);
+		_verts[2] = new Vector3(-1, -1);
+		_verts[3] = new Vector3(1, -1);*/
 
 		_uvs[0] = new Vector2(0.0f, 0.0f);
 		_uvs[1] = new Vector2(1.0f, 0.0f);
@@ -91,6 +126,8 @@ public class CustomPlane
 		_verts[2] = GetVert(p1, dir, -_width);
 		_verts[3] = GetVert(p2, dir, -_width);
 		_mesh.vertices = _verts;
+		_mesh.RecalculateBounds();
+		_mesh.RecalculateNormals();
 	}
 	Vector3 GetVert(Vector3 p, Vector3 dir, float len)
 	{
@@ -107,4 +144,20 @@ public class CustomPlane
 		get { return _visible; }
 		set { _visible = value; }
 	}
+
+	public float Width { get => _width; set =>_width = value; }
+
+	public void SetEndPoints(Transform start, Transform end) {
+		_start = start;
+		_end = end;
+		_oStart = start.position;
+		_oEnd = end.position;
+	}
 }
+/*
+ _verts[0] = p2;
+		_verts[1] = p1;
+		p2.y -= _width;
+		_verts[2] = p2;
+		p1.y -= _width;
+		_verts[3] = p1;*/
