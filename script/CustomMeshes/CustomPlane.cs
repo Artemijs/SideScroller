@@ -2,29 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeshGenerator : MonoBehaviour
+public class CustomPlane
 {
 	Vector3[] _verts;
 	Vector2[] _uvs;
 	int[] _tris;
 	Mesh _mesh;
+	Vector3 _oStart;
+	bool _visible;
+	Vector3 _oEnd;
+
 	public Material _mat;
 	public Transform _start;
 	public Transform _end;
 	public float _width;
-	Vector3 _oStart;
-	public bool _visible;
-	Vector3 _oEnd;
-	// Start is called before the first frame update
-	void Start()
-    {
+	public CustomPlane(Transform start, Transform end, float width, Material mat) {
+		_visible = true;
+		_mat = mat;
 		_verts = new Vector3[4];
 		_uvs = new Vector2[4];
 		_tris = new int[6];
 		_mesh = new Mesh();
-		Vector3 p1 = _start.position;
-		Vector3 p2 = _end.position;
 
+		_start = start;
+		_end = end;
+		Vector3 p1 = start.position;
+		Vector3 p2 = _end.position;
 		_oStart = _start.position;
 		_oEnd = _end.position;
 
@@ -53,26 +56,31 @@ public class MeshGenerator : MonoBehaviour
 		_mesh.triangles = _tris;
 		_mesh.RecalculateBounds();
 		_mesh.RecalculateNormals();
-
-
 	}
-	
-	private void Update()
+
+	public void Update()
 	{
 		if (!_visible) return;
-		if (_oStart != transform.position || _oEnd != _end.position) {
+		if (_oStart != _start.position || _oEnd != _end.position)
+		{
 			UpdateMesh();
 		}
-		
-		Graphics.DrawMesh(_mesh, transform.position, Quaternion.identity, _mat, 0);
+
+
 	}
-	void UpdateMesh() {
+	public void Draw() {
+		if (!_visible) return;
+		Graphics.DrawMesh(_mesh, Vector3.zero, Quaternion.identity, _mat, 0);
+	}
+	void UpdateMesh()
+	{
 		Vector3 p1 = _start.position;
 		Vector3 p2 = _end.position;
 		_oStart = p1;
 		_oEnd = p2;
 		Vector3 dir = (_end.position - _start.position).normalized;
-		if (p1.x < p2.x) {
+		if (p1.x < p2.x)
+		{
 			_verts[0] = GetVert(p2, dir, _width);
 			_verts[1] = GetVert(p1, dir, _width);
 			_verts[2] = GetVert(p2, dir, -_width);
@@ -89,15 +97,14 @@ public class MeshGenerator : MonoBehaviour
 		dir = new Vector3(-dir.y, dir.x, 0);
 		return p + (dir * len);
 	}
-	Vector3 GetVert(Vector3 p, float len) {
+	Vector3 GetVert(Vector3 p, float len)
+	{
 		Vector3 dir = (_end.position - _start.position).normalized;
 		dir = new Vector3(-dir.y, dir.x, 0);
 		return p + (dir * len);
 	}
+	public bool Visible{
+		get { return _visible; }
+		set { _visible = value; }
+	}
 }
-/*_verts[0] = p2;
-		_verts[1] = p1;
-		p2.y -= _width;
-		_verts[2] = p2;
-		p1.y -= _width;
-		_verts[3] = p1;*/
