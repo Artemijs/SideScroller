@@ -12,29 +12,29 @@ public class Turret : MonoBehaviour
 	public  float _maxRange;
 	float _time = 0;
 	public  float _time2Fire;
-	CustomPlane _plane;
+	AutoTarget _laserTarget;
 	TurretState _tState;
 	public float _fireRate;
     // Start is called before the first frame update
     void Start()
     {
 		_target = GameObject.Find("Player");
-		CustomMeshController meshCtrl = GameObject.Find("Main").GetComponent<CustomMeshController>();
-		_plane = meshCtrl.GetPlane();
-		_plane.SetEndPoints(transform, _target.transform.GetChild(0));
+		_laserTarget = transform.GetChild(0).GetComponent<AutoTarget>();
+
+
 	}
 
-    // Update is called once per frame
-    void Update()
+	// Update is called once per frame
+	void Update()
     {
 
 		if (_tState == TurretState.IDLE)
 		{
 			float range = GetRange();
 			if (range > _maxRange) return;
-			else if (_plane.Visible != true)
+			else if (_laserTarget.Visible != true)
 			{
-				_plane.Visible = true;
+				_laserTarget.Visible = true;
 				_tState = TurretState.TARGETING;
 			}
 
@@ -60,7 +60,7 @@ public class Turret : MonoBehaviour
 		if (GetRange() > _maxRange && _tState != TurretState.IDLE)
 		{
 			_tState = TurretState.IDLE;
-			_plane.Visible = false;
+			_laserTarget.Visible = false;
 			_time = 0;
 		}
 	}
@@ -68,9 +68,8 @@ public class Turret : MonoBehaviour
 		return Vector3.Distance(_target.transform.position, transform.position);
 	}
 	void DrawBeam() {
-		_plane.Width = 0.1f * (_time / _time2Fire); 
-		_plane.Update();
-		_plane.Draw();
+		_laserTarget.Width = 0.1f * (_time / _time2Fire);
+		
 	}
 	bool CheckFire() {
 		_time += Time.deltaTime;
@@ -80,7 +79,7 @@ public class Turret : MonoBehaviour
 	void Fire() {
 		Debug.Log("FIRING In range");
 		_time = 0;
-		_plane.Visible = false;
-		_plane.Width = 0;
+		_laserTarget.Visible = false;
+		_laserTarget.Width = 0;
 	}
 }
