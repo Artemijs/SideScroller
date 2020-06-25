@@ -68,6 +68,7 @@ public class Turret : MonoBehaviour
 		return Vector3.Distance(_target.transform.position, transform.position);
 	}
 	void DrawBeam() {
+		_plane.Width = 0.1f * (_time / _time2Fire); 
 		_plane.Update();
 		_plane.Draw();
 	}
@@ -80,5 +81,6 @@ public class Turret : MonoBehaviour
 		Debug.Log("FIRING In range");
 		_time = 0;
 		_plane.Visible = false;
+		_plane.Width = 0;
 	}
 }
