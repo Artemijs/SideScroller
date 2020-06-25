@@ -11,13 +11,14 @@ public enum VFXTEXT_ID
 };
 public class VfxController : MonoBehaviour
 {
+	public AnimationCurve _textVelCurve;
 	public GameObject _canvas;
 	public GameObject[] _allVfxs;
 	public GameObject[] _allVfxTexts;
 	// Start is called before the first frame update
 	void Start()
     {
-        
+		DmgTextAnim._curve = _textVelCurve;
     }
 
     // Update is called once per frame

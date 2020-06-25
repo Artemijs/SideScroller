@@ -24,10 +24,14 @@ public class Projectile : MonoBehaviour
 		//Debug.Log(other.gameObject.name);
 		if (other.gameObject.name == "Player")
 		{
-			//Destroy(gameObject);
+			GetComponent<AudioSource>().mute = true;
 			_main.PlayerTakeDamage(gameObject);
-			transform.position = new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), 0);
+			Destroy(gameObject);
+			/*
 			
+			GetComponent<AudioSource>().mute = true;
+			transform.position = new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), 0);*/
+
 		}
 		//gameObject.SetActive(false);
 	}

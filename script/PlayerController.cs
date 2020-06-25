@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 	PhysicsObject _phyo;
 	public float _jumpSpeed;
 	public bool _rolling;
+	bool _blocking;
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -22,11 +23,18 @@ public class PlayerController : MonoBehaviour
 	void Update()
 	{
 		//gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-		float inptZ = Input.GetAxis("Horizontal");
+		/*float inptZ = Input.GetAxis("Horizontal");
+		if (inptZ != 0) {
+			if (inptZ > 0) inptZ = 1;
+			else inptZ = -1;
+		}*/
+		float inptZ = 0;
+		if (Input.GetKey(KeyCode.A)) inptZ = -1;
+		else if (Input.GetKey(KeyCode.D)) inptZ = 1;
 		float inptY = Input.GetAxis("Vertical");
+		_animator.SetFloat("inputZ", inptZ);
 		CheckMousePos();
 		if (inptZ != 0) {
-			_animator.SetFloat("inputZ", inptZ);
 			Move(inptZ);
 
 		}
@@ -114,10 +122,12 @@ public class PlayerController : MonoBehaviour
 	}
 	bool CheckBlock() {
 		if (Input.GetMouseButtonDown(1)) {
+			_blocking = true;
 			_animator.SetBool("blocking", true);
 		}
 		if (Input.GetMouseButtonUp(1))
 		{
+			_blocking = false;
 			_animator.SetBool("blocking", false);
 		}
 		return (Input.GetMouseButton(1));
@@ -146,4 +156,5 @@ public class PlayerController : MonoBehaviour
 		dir = (  Input.mousePosition - new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0)).normalized;
 		return dir;
 	}
+	public bool Blocking { get { return _blocking; }set { _blocking = false; } }
 }

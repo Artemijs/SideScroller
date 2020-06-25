@@ -19,7 +19,7 @@ public class Turret : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		_target = GameObject.Find("Player");
+		_target = GameObject.Find("Player").transform.GetChild(0).gameObject;
 		_laserTarget = transform.GetChild(0).GetComponent<AutoTarget>();
 
 
@@ -28,6 +28,14 @@ public class Turret : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		if (GetRange() > _maxRange && _tState != TurretState.IDLE)
+		{
+			_tState = TurretState.IDLE;
+			_laserTarget.Visible = false;
+			_time = 0;
+			_laserTarget.Visible = false;
+			_laserTarget.Width = 0;
+		}
 
 		if (_tState == TurretState.IDLE)
 		{
@@ -58,12 +66,7 @@ public class Turret : MonoBehaviour
 
 		}
 
-		if (GetRange() > _maxRange && _tState != TurretState.IDLE)
-		{
-			_tState = TurretState.IDLE;
-			_laserTarget.Visible = false;
-			_time = 0;
-		}
+		
 	}
 	float GetRange() {
 		return Vector3.Distance(_target.transform.position, transform.position);
@@ -82,5 +85,7 @@ public class Turret : MonoBehaviour
 		_time = 0;
 		_laserTarget.Visible = false;
 		_laserTarget.Width = 0;
+		GameObject go = GameObject.Instantiate(_projectile, transform.position, Quaternion.identity);
+		go.GetComponent<Projectile>()._target = _target;
 	}
 }
