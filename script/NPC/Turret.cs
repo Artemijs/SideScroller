@@ -9,6 +9,7 @@ enum TurretState {
 public class Turret : MonoBehaviour
 {
 	GameObject _target;
+	public GameObject _projectile;
 	public  float _maxRange;
 	float _time = 0;
 	public  float _time2Fire;
