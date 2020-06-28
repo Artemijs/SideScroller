@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 3073716328813466282}
   m_Layer: 0
   m_Name: ParticleProjectile
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,6 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
   _speed: 15
+  _homing: 1
+  _direction: {x: 0, y: 0, z: 0}
 --- !u!135 &3073716328813466281
 SphereCollider:
   m_ObjectHideFlags: 0

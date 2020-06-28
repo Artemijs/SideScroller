@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum VFX_ID {
-	ON_HIT=0
+	ON_HIT=0,
+	ON_SLASH
 };
 public enum VFXTEXT_ID
 {
@@ -37,11 +38,18 @@ public class VfxController : MonoBehaviour
 
 		GameObject.Instantiate(_allVfxs[(int)(id)], pos, Quaternion.identity);
 	}
-	public void PlayVfxRotated(VFX_ID id, Vector3 pos, Vector3 rot2Pos)
+	public void PlayVfxRotatedLookAT(VFX_ID id, Vector3 pos, Vector3 rot2Pos)
 	{
 
 		GameObject go = GameObject.Instantiate(_allVfxs[(int)(id)], pos, Quaternion.identity);
 		go.transform.LookAt(rot2Pos);
+		//GameObject.Instantiate(_allVfxs[(int)(id)], pos, Quaternion.identity);
+	}
+	public void PlayVfxRotated(VFX_ID id, Vector3 pos, Vector3 eAngles)
+	{
+
+		GameObject go = GameObject.Instantiate(_allVfxs[(int)(id)], pos, Quaternion.identity);
+		go.transform.eulerAngles = eAngles;
 		//GameObject.Instantiate(_allVfxs[(int)(id)], pos, Quaternion.identity);
 	}
 }

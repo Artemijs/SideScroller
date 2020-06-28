@@ -10,9 +10,11 @@ public class PlayerController : MonoBehaviour
 	public float _jumpSpeed;
 	public bool _rolling;
 	bool _blocking;
+	Slash _slash;
 	// Start is called before the first frame update
 	void Start()
 	{
+		_slash = GetComponent<Slash>();
 		_playerDir = true;
 		_rolling = false;
 		_animator = GetComponent<Animator>();
@@ -65,8 +67,9 @@ public class PlayerController : MonoBehaviour
 
 	}
 	void CheckAttack() {
-	
 
+		if(Input.GetMouseButtonDown(0))
+			_slash.Fire(transform.eulerAngles);
 			
 			//float animTime =  _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
@@ -157,4 +160,31 @@ public class PlayerController : MonoBehaviour
 		return dir;
 	}
 	public bool Blocking { get { return _blocking; }set { _blocking = false; } }
+
+	private void OnTriggerEnter(Collider other)
+	{
+		//Debug.Log(other.gameObject.name);
+		if (other.gameObject.tag == "Projectile")
+		{
+			//GetComponent<AudioSource>().mute = true;
+			//_main.PlayerTakeDamage(gameObject);
+			if (_blocking)
+			{
+				Projectile p = other.gameObject.GetComponent<Projectile>();
+				Vector2 mPos = Input.mousePosition;
+				Vector2 dir = (mPos - new Vector2(Screen.width * 0.5f, Screen.height * 0.5f)).normalized;
+				p.Rebound(dir);
+			}
+			else
+			{
+				Destroy(other.gameObject);
+			}
+			/*
+			
+			GetComponent<AudioSource>().mute = true;
+			transform.position = new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), 0);*/
+
+		}
+		//gameObject.SetActive(false);
+	}
 }

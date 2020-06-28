@@ -7,33 +7,36 @@ public class Projectile : MonoBehaviour
 	public GameObject _target;
 	public float _speed;
 	public static Main _main;
+	public bool _homing = true;
+	public Vector3 _direction;
+	float _time ;
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
+		_time = 0;
+
+	}
 
     // Update is called once per frame
     void Update()
     {
-		transform.position += (_target.transform.position - transform.position).normalized * _speed * Time.deltaTime;
-		transform.LookAt(_target.transform.position);
-    }
-	private void OnTriggerEnter(Collider other)
-	{
-		//Debug.Log(other.gameObject.name);
-		if (other.gameObject.name == "Player")
+		if (_homing)
 		{
-			GetComponent<AudioSource>().mute = true;
-			_main.PlayerTakeDamage(gameObject);
-			Destroy(gameObject);
-			/*
-			
-			GetComponent<AudioSource>().mute = true;
-			transform.position = new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), 0);*/
-
+			transform.position += (_target.transform.position - transform.position).normalized * _speed * Time.deltaTime;
+			transform.LookAt(_target.transform.position);
 		}
-		//gameObject.SetActive(false);
+		else {
+			transform.position += _direction * _speed * Time.deltaTime;
+			_time += Time.deltaTime;
+			if (_time > 3) Destroy(gameObject);
+		}
+    }
+	public void Rebound(Vector3 dir) {
+		_direction = dir;
+		transform.LookAt(_target.transform.position + dir*100);
+		transform.position += _direction * 2;
+		_homing = false;
 	}
+	
 	
 }

@@ -88,4 +88,14 @@ public class Turret : MonoBehaviour
 		GameObject go = GameObject.Instantiate(_projectile, transform.position, Quaternion.identity);
 		go.GetComponent<Projectile>()._target = _target;
 	}
+	private void OnTriggerEnter(Collider other)
+	{
+		VfxController vfxCtrl = GameObject.Find("Main").GetComponent<VfxController>();
+		vfxCtrl.PlayVfxText(VFXTEXT_ID.DMG_TEXT, transform.position, Random.Range(10, 15).ToString());
+		if (other.transform.position.x > transform.position.x)
+			vfxCtrl.PlayVfxRotated(VFX_ID.ON_SLASH, transform.position, other.transform.position + new Vector3(0, 0, 45));
+		else if (other.transform.position.x < transform.position.x)
+			vfxCtrl.PlayVfxRotated(VFX_ID.ON_SLASH, transform.position, other.transform.position + new Vector3(0, 0, -45));
+
+	}
 }

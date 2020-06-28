@@ -33,7 +33,7 @@ public class Main : MonoBehaviour
 
 		_afxCtrl.PlayAFX(AFX_ID.FBALL_COLLIDED);
 		//play onhit particles
-		_vfxCtrl.PlayVfxRotated(VFX_ID.ON_HIT, _player.GetChild(0).position, obj.transform.position);
+		_vfxCtrl.PlayVfxRotatedLookAT(VFX_ID.ON_HIT, _player.GetChild(0).position, obj.transform.position);
 		//-100 dmg red letters
 		_vfxCtrl.PlayVfxText(VFXTEXT_ID.DMG_TEXT, _player.GetChild(0).position, "-"+ dmg.ToString());
 		//play sound
